@@ -15,7 +15,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { userExists } from "../redux/reducers/auth";
 import toast from "react-hot-toast";
-import Header from "../components/header";
+import Header from "../components/Header.jsx";
 import { useNavigate } from "react-router";
 import { FormControl } from "@mui/material";
 import { InputLabel, Select, MenuItem } from "@mui/material";

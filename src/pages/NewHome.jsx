@@ -19,9 +19,9 @@ import img1 from "../assets/dark-iron-man-7b.jpg";
 import departments from "../assets/fake";
 import img3 from "../assets/spiderman_2099_superhero_dark_background_4k_hd_superheroes.jpg";
 const RecipeReviewCard = lazy(() => import("../components/Blog"));
-import Header from "../components/header";
+import Header from "../components/Header.jsx";
 import { useTheme } from "@mui/material/styles";
-import Loading from "../components/Loading";
+import Loading from "../components/Loading.jsx";
 
 function NewHome() {
   const [blogs, setBlogs] = useState([]);

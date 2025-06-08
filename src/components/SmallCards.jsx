@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import RecipeReviewCard from "./Blog";
+import RecipeReviewCard from "./Blog.jsx";
 
 export default function SmallCards({blogId}) {
   const [blogs, setBlogs] = useState([]);

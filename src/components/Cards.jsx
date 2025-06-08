@@ -15,9 +15,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
-import DisplayComments from "../pages/DisplayComments";
-import Header from "./header";
-import SmallCards from "./SmallCards";
+import DisplayComments from "../pages/DisplayComments.jsx";
+import Header from "./Header.jsx";
+import SmallCards from "./SmallCards.jsx";
 import { useSelector } from "react-redux";
 import { Delete, Edit, EditAttributes } from "@mui/icons-material";
 

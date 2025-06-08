@@ -15,7 +15,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import Header from "../components/header";
+import Header from "../components/Header.jsx";
 import { Link } from "../components/Styled";
 import { userExists, userNotExists } from "../redux/reducers/auth";
 

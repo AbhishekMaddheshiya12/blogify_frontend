@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Container, Paper } from '@mui/material';
-import Header from '../components/header';
+import Header from '../components/Header.jsx';
 import image from '../assets/istockphoto-1411773944-612x612.jpg'
 
 const AboutUs = () => {

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import toast from "react-hot-toast";
-import Header from "../components/header";
+import Header from "../components/Header.jsx";
 import { useNavigate } from "react-router";
 
 function UpdateForm() {
