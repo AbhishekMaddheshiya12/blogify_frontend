@@ -123,7 +123,7 @@ const CreateBlog = () => {
               onClick={handleFileClick}
               sx={{ marginBottom: "20px" }}
             >
-              Add Images
+              Add Images<span style={{fontWeight:"bold",color:"red"}}>(mandatory)</span>
             </Button>
             <Input
               type="file"

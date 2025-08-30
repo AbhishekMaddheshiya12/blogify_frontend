@@ -9,7 +9,8 @@ import {
   IconButton,
   Paper,
   TextField,
-  Typography
+  Typography,
+  useMediaQuery
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -20,6 +21,7 @@ import Header from "./Header.jsx";
 import SmallCards from "./SmallCards.jsx";
 import { useSelector } from "react-redux";
 import { Delete, Edit, EditAttributes } from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
 
 function Cards() {
   const [likes, setLikes] = useState([]);
@@ -29,6 +31,8 @@ function Cards() {
   const param = useParams();
   const navigate = useNavigate();
   // const API_URL = process.env.REACT_APP_API_URL;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const getData = async () => {
@@ -150,10 +154,11 @@ function Cards() {
 
             {
               (blog?.creator?._id === user._id)?<>
-                <IconButton sx={{color:"black"}} onClick={deleteHandler}>
+                <IconButton sx={{color:"black",display:isMobile?"none":"block"}} onClick={deleteHandler}>
                   <Delete></Delete>
                 </IconButton>
                   <Button
+                  sx={{color:"black",display:isMobile?"none":"block"}}
                     title="Edit"
                     startIcon={<Edit sx={{color:"black"}} />}
                     onClick={() => navigate(`/editblog/${param._id}`)}
