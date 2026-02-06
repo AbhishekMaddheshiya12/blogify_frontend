@@ -1,31 +1,27 @@
-import axios from 'axios';
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx';
-import BlogEdit from './components/BlogEdit.jsx';
 import Loading from './components/Loading.jsx';
 
-import NewHome from './pages/NewHome.jsx';
-import Login from './pages/Login.jsx';
-import SignUp from './pages/SignUp.jsx';
+const NewHome = lazy(() => import("./pages/NewHome.jsx"));
+const Login = lazy(() => import("./pages/Login.jsx"));
+const SignUp = lazy(() => import("./pages/SignUp.jsx"));
+const BlogEdit = lazy(() => import("./components/BlogEdit.jsx")); 
 const Cards = lazy(() => import("./components/Cards.jsx"));
 const CreateBlog = lazy(() => import("./pages/CreateBlog.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
 const UpdateForm = lazy(() => import("./pages/UpdateForm.jsx"));
 const AboutUs = lazy(() => import("./pages/AboutUs.jsx"));
 
-function App() {  
+
+function App() {
   const { user } = useSelector((state) => state.auth);
-  useEffect(() => {
-    import("./pages/Login.jsx");
-    import("./pages/SignUp.jsx");
-  }, []);
 
   return (
     <div>
-      <Suspense 
+      <Suspense
         fallback={
           <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
             <Loading />
@@ -33,7 +29,7 @@ function App() {
         }
       >
         <Routes>
-          <Route element={<ProtectedRoutes user={user}/>}>
+          <Route element={<ProtectedRoutes user={user} />}>
             <Route path='/' element={<NewHome />} />
             <Route path='/create' element={<CreateBlog />} />
             <Route path='/blogs/:_id' element={<Cards />} />
@@ -42,13 +38,13 @@ function App() {
             <Route path='/about' element={<AboutUs />} />
           </Route>
 
-          <Route 
-            path="/login" 
-            element={<ProtectedRoutes user={!user} redirect="/"><Login /></ProtectedRoutes>} 
+          <Route
+            path="/login"
+            element={<ProtectedRoutes user={!user} redirect="/"><Login /></ProtectedRoutes>}
           />
-          <Route 
-            path="/signup" 
-            element={<ProtectedRoutes user={!user} redirect="/"><SignUp /></ProtectedRoutes>} 
+          <Route
+            path="/signup"
+            element={<ProtectedRoutes user={!user} redirect="/"><SignUp /></ProtectedRoutes>}
           />
           <Route path="/editblog/:_id" element={<BlogEdit />} />
         </Routes>
