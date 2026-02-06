@@ -1,14 +1,15 @@
+import axios from 'axios';
 import { lazy, Suspense, useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoutes from './components/ProtectedRoutes.jsx';
+import BlogEdit from './components/BlogEdit.jsx';
 import Loading from './components/Loading.jsx';
 
-const BlogEdit = lazy(() => import("./components/BlogEdit.jsx"));
-const NewHome = lazy(() => import("./pages/NewHome.jsx"));
-const Login = lazy(() => import("./pages/Login.jsx"));
-const SignUp = lazy(() => import("./pages/SignUp.jsx"));
+import NewHome from './pages/NewHome.jsx';
+import Login from './pages/Login.jsx';
+import SignUp from './pages/SignUp.jsx';
 const Cards = lazy(() => import("./components/Cards.jsx"));
 const CreateBlog = lazy(() => import("./pages/CreateBlog.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
