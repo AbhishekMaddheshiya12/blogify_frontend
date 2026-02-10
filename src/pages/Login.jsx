@@ -1,32 +1,30 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
   Paper,
   TextField,
   Typography,
-  useMediaQuery,
-  useTheme,
+  Container,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Visibility, VisibilityOff, LockOutlined, PersonOutline } from "@mui/icons-material";
 import axios from "axios";
-import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { userExists } from "../redux/reducers/auth";
 import { useNavigate } from "react-router";
 
-const Login = (currentLocation) => {
+const Login = ({ currentLocation = "/" }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const API_URL = process.env.REACT_APP_API_URL;
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const config = {
       withCredentials: true,
       headers: { "Content-Type": "application/json" },
@@ -38,113 +36,158 @@ const Login = (currentLocation) => {
         { username, password },
         config
       );
-      dispatch(userExists(true));
+      dispatch(userExists(data.user));
       toast.success(data.message);
       navigate(currentLocation);
     } catch (error) {
-      if (error.response) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Some error occurred");
-      }
+      toast.error(error.response?.data?.message || "Some error occurred");
     }
-
-    setUsername("");
-    setPassword("");
   };
 
   return (
     <Box
       sx={{
-        height: "100vh",
+        minHeight: "100vh",
         display: "flex",
+        background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
         justifyContent: "center",
         alignItems: "center",
-        padding: 2,
+        p: 2,
       }}
     >
-      <Paper
-        elevation={3}
-        sx={{
-          width: { xs: "90%", sm: "80%", md: "25%" },
-          height: { xs: "auto", md: "60%" },
-          padding: { xs: 2, md: 4 },
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          variant="h3"
+      <Container maxWidth="xs">
+        <Paper
+          elevation={0}
           sx={{
-            fontFamily: "cursive",
-            fontWeight: 600,
-            fontSize: { xs: "2rem", md: "3rem" },
-          }}
-        >
-          Login
-        </Typography>
-
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            marginTop: "1rem",
-            width: "100%",
+            p: { xs: 3, md: 5 },
             display: "flex",
             flexDirection: "column",
-            gap: "1rem",
+            alignItems: "center",
+            borderRadius: "24px",
+            border: "1px solid #f0f0f0",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.05)",
+            transition: "transform 0.3s ease",
+            "&:hover": { transform: "translateY(-5px)" },
           }}
         >
-          <TextField
-            fullWidth
-            label="Username"
-            variant="standard"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="Password"
-            variant="standard"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            type="submit"
+          {/* Brand/Logo Area */}
+          <Box
             sx={{
-              fontFamily: "cursive",
-              fontWeight: 600,
-              backgroundColor: "black",
-              "&:hover": { backgroundColor: "#333" },
+              width: 60,
+              height: 60,
+              bgcolor: "black",
+              borderRadius: "16px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mb: 3,
             }}
           >
-            Login
-          </Button>
-        </form>
+            <Typography variant="h4" color="white" fontWeight={900}>
+              B
+            </Typography>
+          </Box>
 
-        <Typography
-          mt={2}
-          sx={{
-            fontFamily: "cursive",
-            fontWeight: 600,
-            textAlign: "center",
-            fontSize: { xs: "1rem", md: "1.2rem" },
-          }}
-        >
-          Don't have an account?
-        </Typography>
-        <Button
-          variant="text"
-          onClick={() => navigate("/signup")}
-          sx={{ color: "black", fontFamily: "cursive", fontWeight: 600 }}
-        >
-          Signup
-        </Button>
-      </Paper>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              mb: 1,
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: "-1px",
+            }}
+          >
+            Welcome Back
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mb={4}>
+            Enter your details to continue your story.
+          </Typography>
+
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <TextField
+                fullWidth
+                label="Username"
+                variant="outlined"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutline fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: "12px" },
+                }}
+              />
+              <TextField
+                fullWidth
+                label="Password"
+                variant="outlined"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockOutlined fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: "12px" },
+                }}
+              />
+              <Button
+                variant="contained"
+                type="submit"
+                fullWidth
+                sx={{
+                  py: 1.8,
+                  borderRadius: "12px",
+                  bgcolor: "black",
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                  textTransform: "none",
+                  transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  "&:hover": { 
+                    bgcolor: "#222", 
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)" 
+                  },
+                }}
+              >
+                Sign In
+              </Button>
+            </Box>
+          </form>
+
+          <Box sx={{ mt: 4, textAlign: "center", width: "100%" }}>
+            <Typography variant="body2" color="text.secondary">
+              Don't have an account?
+            </Typography>
+            <Button
+              variant="text"
+              onClick={() => navigate("/signup")}
+              sx={{
+                color: "black",
+                fontWeight: 700,
+                textTransform: "none",
+                fontSize: "1rem",
+                "&:hover": { bgcolor: "transparent", textDecoration: "underline" },
+              }}
+            >
+              Create Account
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
     </Box>
   );
 };
 
-export { Login };
+export default Login;
