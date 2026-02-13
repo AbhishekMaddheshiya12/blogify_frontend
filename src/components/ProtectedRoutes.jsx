@@ -2,9 +2,11 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoutes = ({ children, user, redirect = "/login" }) => {
+
   if (!user) {
-    return <Navigate to={redirect} replace />;
+    return <Navigate to={redirect} />;
   }
+
   return children ? children : <Outlet />;
 };
 

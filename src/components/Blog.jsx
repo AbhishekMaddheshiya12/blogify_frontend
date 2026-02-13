@@ -9,6 +9,7 @@ export default function RecipeReviewCard(props) {
     <Link to={`/blogs/${_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <Card 
         sx={{ 
+          mt: 2,
           maxWidth: 320, 
           height: 380, 
           display: 'flex', 

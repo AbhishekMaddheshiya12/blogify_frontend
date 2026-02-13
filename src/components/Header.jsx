@@ -31,19 +31,22 @@ function Header() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width:768px)');
   const [drawerOpen, setDrawerOpen] = useState(false);
-  // const API_URL = process.env.REACT_APP_API_URL;
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.get(`https://blogify-backend-1-porw.onrender.com/user/logout`, {
-        withCredentials: true,
-        headers: { 'Content-Type': 'application/json' }
-      });
+    const { data } = await axios.get(
+      "https://blogify-backend-1-porw.onrender.com/user/logout", 
+      { withCredentials: true }
+    );
+    
+    if (data.success) {
       dispatch(userNotExists());
-      toast.success(res.data.message);
-    } catch (error) {
-      console.log(error);
+      toast.success("Logged out successfully");
+      navigate("/login", { replace: true }); 
     }
+  } catch (error) {
+    toast.error("Logout failed");
+  }
   };
 
   const menuItems = [

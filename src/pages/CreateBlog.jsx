@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import Header from "../components/Header.jsx";
 import { useNavigate } from "react-router";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import WritingLoader from "../components/Loading.jsx";
 
 const CreateBlog = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const CreateBlog = () => {
   const [formData, setFormData] = useState({ title: "", subtitle: "", content: "" });
   const [category, setCategory] = useState("");
   const { user } = useSelector((state) => state.auth);
+  const [loader, setLoader] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -42,6 +44,7 @@ const CreateBlog = () => {
     formdata.append("selectedImage", selectedImage);
 
     try {
+      setLoader(true);
       const { data } = await axios.post(
         `https://blogify-backend-1-porw.onrender.com/user/uploadblog`,
         formdata,
@@ -50,11 +53,16 @@ const CreateBlog = () => {
       dispatch(userExists(true));
       toast.success(data.message);
       navigate("/");
+      setLoader(false);
     } catch (error) {
+      setLoader(false);
       toast.error("Failed to create blog.");
+      
     }
   };
-
+  if(loader)return (
+    <WritingLoader/>
+  )
   return (
     <Box sx={{ bgcolor: "#fcfcfc", minHeight: "100vh", pb: 10 }}>
       <Header />

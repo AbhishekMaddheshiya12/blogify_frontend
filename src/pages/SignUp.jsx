@@ -6,9 +6,17 @@ import {
   Paper,
   TextField,
   Typography,
-  useMediaQuery,
-  useTheme,
+  InputAdornment,
+  IconButton,
+  CircularProgress,
 } from "@mui/material";
+import { 
+  Visibility, 
+  VisibilityOff, 
+  LockOutlined, 
+  PersonOutline, 
+  BadgeOutlined 
+} from "@mui/icons-material";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -19,20 +27,22 @@ const SignUp = () => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!name || !username || !password) return toast.error("Please fill all fields");
 
+    setLoading(true);
     const config = {
       withCredentials: true,
       headers: { "Content-Type": "application/json" },
     };
+
     try {
       const { data } = await axios.post(
         `https://blogify-backend-1-porw.onrender.com/user/signup`,
@@ -43,111 +53,169 @@ const SignUp = () => {
       toast.success(data.message);
       navigate("/");
     } catch (error) {
-      if (error.response?.status) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Some error occurred");
-      }
+      toast.error(error.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
-
-    setName("");
-    setUsername("");
-    setPassword("");
   };
 
   return (
-    <Container
+    <Box
       sx={{
-        height: "100vh",
+        minHeight: "100vh",
         display: "flex",
+        background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
         justifyContent: "center",
         alignItems: "center",
-        padding: 2,
+        p: 2,
       }}
     >
-      <Paper
-        elevation={3}
-        sx={{
-          width: { xs: "90%", sm: "80%", md: "30%" },
-          height: { xs: "auto", md: "60%" },
-          padding: { xs: 2, md: 4 },
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          variant="h3"
+      <Container maxWidth="xs">
+        <Paper
+          elevation={0}
           sx={{
-            fontFamily: "cursive",
-            fontWeight: 600,
-            fontSize: { xs: "2rem", md: "3rem" },
-          }}
-        >
-          SignUp
-        </Typography>
-
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            marginTop: "1rem",
-            width: "100%",
+            p: { xs: 3, md: 5 },
             display: "flex",
             flexDirection: "column",
-            gap: "1rem",
+            alignItems: "center",
+            borderRadius: "24px",
+            border: "1px solid #f0f0f0",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.05)",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         >
-          <TextField
-            fullWidth
-            label="Name"
-            variant="standard"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="Username"
-            variant="standard"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="Password"
-            variant="standard"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            type="submit"
+          {/* Identity Icon */}
+          <Box
             sx={{
-              fontFamily: "cursive",
-              fontWeight: 600,
-              backgroundColor: "black",
-              "&:hover": { backgroundColor: "#333" },
+              width: 50,
+              height: 50,
+              bgcolor: "black",
+              borderRadius: "14px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              mb: 2,
             }}
           >
-            SignUp
-          </Button>
-        </form>
+            <Typography variant="h5" color="white" fontWeight={900}>B</Typography>
+          </Box>
 
-        <Typography
-          mt={2}
-          sx={{ fontFamily: "cursive", fontWeight: 600, textAlign: "center" }}
-        >
-          Already have an account?
-        </Typography>
-        <Button
-          variant="text"
-          onClick={() => navigate("/login")}
-          sx={{ color: "black", fontFamily: "cursive", fontWeight: 600 }}
-        >
-          Login
-        </Button>
-      </Paper>
-    </Container>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              mb: 1,
+              fontFamily: "'Inter', sans-serif",
+              letterSpacing: "-1px",
+              textAlign: "center",
+            }}
+          >
+            Create Account
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mb={4} textAlign="center">
+            Start your journey with Blogify today.
+          </Typography>
+
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+              <TextField
+                fullWidth
+                label="Full Name"
+                variant="outlined"
+                disabled={loading}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <BadgeOutlined fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: "12px" },
+                }}
+              />
+              <TextField
+                fullWidth
+                label="Username"
+                variant="outlined"
+                disabled={loading}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutline fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: "12px" },
+                }}
+              />
+              <TextField
+                fullWidth
+                label="Password"
+                variant="outlined"
+                disabled={loading}
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockOutlined fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" disabled={loading}>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: "12px" },
+                }}
+              />
+              <Button
+                variant="contained"
+                type="submit"
+                fullWidth
+                disabled={loading}
+                sx={{
+                  mt: 1,
+                  py: 1.8,
+                  borderRadius: "12px",
+                  bgcolor: "black",
+                  fontSize: "1rem",
+                  fontWeight: 700,
+                  textTransform: "none",
+                  "&:hover": { bgcolor: "#222" },
+                }}
+              >
+                {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Join Community"}
+              </Button>
+            </Box>
+          </form>
+
+          <Box sx={{ mt: 4, textAlign: "center", width: "100%" }}>
+            <Typography variant="body2" color="text.secondary">
+              Already have an account?
+            </Typography>
+            <Button
+              variant="text"
+              onClick={() => navigate("/login")}
+              disabled={loading}
+              sx={{
+                color: "black",
+                fontWeight: 700,
+                textTransform: "none",
+                "&:hover": { bgcolor: "transparent", textDecoration: "underline" },
+              }}
+            >
+              Log in here
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

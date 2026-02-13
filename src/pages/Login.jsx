@@ -8,8 +8,14 @@ import {
   Container,
   InputAdornment,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
-import { Visibility, VisibilityOff, LockOutlined, PersonOutline } from "@mui/icons-material";
+import {
+  Visibility,
+  VisibilityOff,
+  LockOutlined,
+  PersonOutline,
+} from "@mui/icons-material";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -22,9 +28,13 @@ const Login = ({ currentLocation = "/" }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!username || !password) return toast.error("Please fill all fields");
+
+    setLoading(true);
     const config = {
       withCredentials: true,
       headers: { "Content-Type": "application/json" },
@@ -36,11 +46,13 @@ const Login = ({ currentLocation = "/" }) => {
         { username, password },
         config
       );
-      dispatch(userExists(data.user));
+      dispatch(userExists(data.user)); // Assuming your backend returns user data
       toast.success(data.message);
       navigate(currentLocation);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Some error occurred");
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,24 +78,24 @@ const Login = ({ currentLocation = "/" }) => {
             borderRadius: "24px",
             border: "1px solid #f0f0f0",
             boxShadow: "0 20px 40px rgba(0,0,0,0.05)",
-            transition: "transform 0.3s ease",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
             "&:hover": { transform: "translateY(-5px)" },
           }}
         >
-          {/* Brand/Logo Area */}
+          {/* Brand Identity */}
           <Box
             sx={{
-              width: 60,
-              height: 60,
+              width: 50,
+              height: 50,
               bgcolor: "black",
-              borderRadius: "16px",
+              borderRadius: "14px",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              mb: 3,
+              mb: 2,
             }}
           >
-            <Typography variant="h4" color="white" fontWeight={900}>
+            <Typography variant="h5" color="white" fontWeight={900}>
               B
             </Typography>
           </Box>
@@ -95,20 +107,22 @@ const Login = ({ currentLocation = "/" }) => {
               mb: 1,
               fontFamily: "'Inter', sans-serif",
               letterSpacing: "-1px",
+              textAlign: "center",
             }}
           >
             Welcome Back
           </Typography>
-          <Typography variant="body2" color="text.secondary" mb={4}>
-            Enter your details to continue your story.
+          <Typography variant="body2" color="text.secondary" mb={4} textAlign="center">
+            Sign in to continue your journey.
           </Typography>
 
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
               <TextField
                 fullWidth
                 label="Username"
                 variant="outlined"
+                disabled={loading}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 InputProps={{
@@ -124,6 +138,7 @@ const Login = ({ currentLocation = "/" }) => {
                 fullWidth
                 label="Password"
                 variant="outlined"
+                disabled={loading}
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -135,7 +150,11 @@ const Login = ({ currentLocation = "/" }) => {
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                        disabled={loading}
+                      >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
@@ -147,7 +166,9 @@ const Login = ({ currentLocation = "/" }) => {
                 variant="contained"
                 type="submit"
                 fullWidth
+                disabled={loading}
                 sx={{
+                  mt: 1,
                   py: 1.8,
                   borderRadius: "12px",
                   bgcolor: "black",
@@ -155,13 +176,17 @@ const Login = ({ currentLocation = "/" }) => {
                   fontWeight: 700,
                   textTransform: "none",
                   transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                  "&:hover": { 
-                    bgcolor: "#222", 
-                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)" 
+                  "&:hover": {
+                    bgcolor: "#222",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
                   },
                 }}
               >
-                Sign In
+                {loading ? (
+                  <CircularProgress size={24} sx={{ color: "white" }} />
+                ) : (
+                  "Login"
+                )}
               </Button>
             </Box>
           </form>
@@ -173,6 +198,7 @@ const Login = ({ currentLocation = "/" }) => {
             <Button
               variant="text"
               onClick={() => navigate("/signup")}
+              disabled={loading}
               sx={{
                 color: "black",
                 fontWeight: 700,
@@ -181,7 +207,7 @@ const Login = ({ currentLocation = "/" }) => {
                 "&:hover": { bgcolor: "transparent", textDecoration: "underline" },
               }}
             >
-              Create Account
+              Signup
             </Button>
           </Box>
         </Paper>

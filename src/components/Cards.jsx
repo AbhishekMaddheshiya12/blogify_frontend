@@ -13,12 +13,14 @@ import { useTheme } from "@mui/material/styles";
 import Header from "./Header.jsx";
 import SmallCards from "./SmallCards.jsx";
 import DisplayComments from "../pages/DisplayComments.jsx";
+import WritingLoader from "./Loading.jsx";
 
 function Cards() {
   const [likes, setLikes] = useState(0);
   const [blog, setBlogs] = useState({});
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+  const [loader,setLoader] = useState(false);
   const param = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -31,6 +33,7 @@ function Cards() {
 
   const fetchAllData = async () => {
     try {
+      setLoader(true);
       const [blogRes, likesRes, commentsRes] = await Promise.all([
         axios.get(`https://blogify-backend-1-porw.onrender.com/user/getblog/${param._id}`, { withCredentials: true }),
         axios.get(`https://blogify-backend-1-porw.onrender.com/user/getlikes/${param._id}`, { withCredentials: true }),
@@ -39,6 +42,7 @@ function Cards() {
       setBlogs(blogRes.data.blog);
       setLikes(likesRes.data?.likes?.length || 0);
       setComments(commentsRes.data?.comments || []);
+      setLoader(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -76,15 +80,26 @@ function Cards() {
   const deleteHandler = async () => {
     if (!window.confirm("Delete this blog permanently?")) return;
     try {
+      setLoader(true);
       const res = await axios.delete(`https://blogify-backend-1-porw.onrender.com/user/deleteblog/${param._id}`, { withCredentials: true });
       if (res?.data?.success) {
         toast.success("Post deleted");
         navigate("/");
       }
+      setLoader(false);
     } catch (error) {
       toast.error(error?.response?.data?.message);
+      setLoader(false);
     }
   };
+
+  if (loader) {
+    return (
+      <Box sx={{ minHeight: "100vh", display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <WritingLoader />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ bgcolor: "#fcfcfc", minHeight: "100vh" }}>
